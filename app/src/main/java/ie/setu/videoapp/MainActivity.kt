@@ -5,11 +5,13 @@ import android.net.Uri
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
-import ie.setu.videoapp.databinding.ActivityMainBinding
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import com.google.android.material.snackbar.Snackbar
+import ie.setu.videoapp.databinding.ActivityMainBinding
 import java.util.Collections
-
 
 class MainActivity : AppCompatActivity() {
 
@@ -22,15 +24,22 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // default sample video
-        videos.add(
-            VideoModel(
-                "Never Gonna Give You Up",
-                "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-                "https://i.ytimg.com/vi/dQw4w9WgXcQ/hqdefault.jpg"
-            )
-        )
+        // Load saved videos first
+        loadVideos()
 
+        // Add default sample only if list is empty
+        if (videos.isEmpty()) {
+            videos.add(
+                VideoModel(
+                    "Never Gonna Give You Up",
+                    "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+                    "https://i.ytimg.com/vi/dQw4w9WgXcQ/hqdefault.jpg"
+                )
+            )
+            saveVideos()
+        }
+
+        // Adapter setup
         adapter = VideoAdapter(
             videos,
             onItemClick = { video ->
@@ -48,14 +57,17 @@ class MainActivity : AppCompatActivity() {
                 builder.setPositiveButton("Delete") { _, _ ->
                     videos.removeAt(position)
                     adapter.notifyItemRemoved(position)
-                    val snackbar = com.google.android.material.snackbar.Snackbar.make(
+                    saveVideos()
+
+                    val snackbar = Snackbar.make(
                         binding.root,
                         "Video deleted",
-                        com.google.android.material.snackbar.Snackbar.LENGTH_LONG
+                        Snackbar.LENGTH_LONG
                     )
                     snackbar.setAction("UNDO") {
                         videos.add(position, video)
                         adapter.notifyItemInserted(position)
+                        saveVideos()
                     }
                     snackbar.show()
                 }
@@ -78,25 +90,17 @@ class MainActivity : AppCompatActivity() {
             ): Boolean {
                 val fromPosition = viewHolder.adapterPosition
                 val toPosition = target.adapterPosition
-
-                // Swap the videos in the list
                 Collections.swap(videos, fromPosition, toPosition)
                 adapter.notifyItemMoved(fromPosition, toPosition)
+                saveVideos()
                 return true
             }
 
-            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                // No swipe action for now
-            }
-
-            override fun isLongPressDragEnabled(): Boolean {
-                // Allow drag by holding down the item
-                return true
-            }
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {}
+            override fun isLongPressDragEnabled() = true
 
             override fun onSelectedChanged(viewHolder: RecyclerView.ViewHolder?, actionState: Int) {
                 super.onSelectedChanged(viewHolder, actionState)
-                // Optional lift effect while dragging
                 if (actionState == ItemTouchHelper.ACTION_STATE_DRAG) {
                     viewHolder?.itemView?.alpha = 0.7f
                     viewHolder?.itemView?.scaleX = 1.05f
@@ -106,19 +110,16 @@ class MainActivity : AppCompatActivity() {
 
             override fun clearView(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder) {
                 super.clearView(recyclerView, viewHolder)
-                // Reset view appearance after drag
                 viewHolder.itemView.alpha = 1.0f
                 viewHolder.itemView.scaleX = 1.0f
                 viewHolder.itemView.scaleY = 1.0f
             }
         }
 
-// Attach it to the RecyclerView
         val itemTouchHelper = ItemTouchHelper(itemTouchHelperCallback)
         itemTouchHelper.attachToRecyclerView(binding.videoRecycler)
 
-
-        // add new video
+        // Add new video
         binding.addFab.setOnClickListener {
             val builder = androidx.appcompat.app.AlertDialog.Builder(this)
             builder.setTitle("Add new video")
@@ -156,6 +157,7 @@ class MainActivity : AppCompatActivity() {
 
                     videos.add(VideoModel(title, url, thumb))
                     adapter.notifyItemInserted(videos.size - 1)
+                    saveVideos()
                 }
             }
 
@@ -179,7 +181,6 @@ class MainActivity : AppCompatActivity() {
         layout.setPadding(50, 40, 50, 10)
         layout.addView(inputTitle)
         layout.addView(inputUrl)
-
         builder.setView(layout)
 
         builder.setPositiveButton("Save") { _, _ ->
@@ -203,10 +204,32 @@ class MainActivity : AppCompatActivity() {
                 videos[position].url = newUrl
                 videos[position].thumbnailUrl = newThumb
                 adapter.notifyItemChanged(position)
+                saveVideos()
             }
         }
 
         builder.setNegativeButton("Cancel", null)
         builder.show()
+    }
+
+    // Save videos list to SharedPreferences
+    private fun saveVideos() {
+        val sharedPreferences = getSharedPreferences("video_prefs", MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        val json = Gson().toJson(videos)
+        editor.putString("video_list", json)
+        editor.apply()
+    }
+
+    // Load videos list from SharedPreferences
+    private fun loadVideos() {
+        val sharedPreferences = getSharedPreferences("video_prefs", MODE_PRIVATE)
+        val json = sharedPreferences.getString("video_list", null)
+        if (json != null) {
+            val type = TypeToken.getParameterized(MutableList::class.java, VideoModel::class.java).type
+            val savedList: MutableList<VideoModel> = Gson().fromJson(json, type)
+            videos.clear()
+            videos.addAll(savedList)
+        }
     }
 }
