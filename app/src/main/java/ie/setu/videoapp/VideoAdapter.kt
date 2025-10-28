@@ -6,6 +6,8 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+
 
 class VideoAdapter(
     private val items: List<VideoModel>,
@@ -29,10 +31,22 @@ class VideoAdapter(
         val video = items[position]
         holder.title.text = video.title
         holder.source.text = video.url
+
+        // load thumbnail
+        if (video.thumbnailUrl.isNotEmpty()) {
+            Glide.with(holder.itemView.context)
+                .load(video.thumbnailUrl)
+                .placeholder(android.R.color.darker_gray)
+                .into(holder.thumb)
+        } else {
+            holder.thumb.setImageResource(android.R.color.darker_gray)
+        }
+
         holder.itemView.setOnClickListener {
             onItemClick(video)
         }
     }
+
 
 
     override fun getItemCount(): Int = items.size

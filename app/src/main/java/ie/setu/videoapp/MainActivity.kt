@@ -18,8 +18,9 @@ class MainActivity : AppCompatActivity() {
 
         val videos = listOf(
             VideoModel(
-                "Funny Cat Compilation",
-                "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+                "Never Gonna Give You Up",
+                "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+                "https://i.ytimg.com/vi/dQw4w9WgXcQ/hqdefault.jpg"
             )
         )
 
