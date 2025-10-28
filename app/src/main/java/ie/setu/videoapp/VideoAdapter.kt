@@ -12,9 +12,10 @@ import com.bumptech.glide.Glide
 class VideoAdapter(
     private val items: MutableList<VideoModel>,
     private val onItemClick: (VideoModel) -> Unit,
+    private val onEditClick: (Int) -> Unit,
     private val onDeleteClick: (Int) -> Unit
-)
- : RecyclerView.Adapter<VideoAdapter.VideoViewHolder>() {
+) : RecyclerView.Adapter<VideoAdapter.VideoViewHolder>() {
+
 
 
     inner class VideoViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -34,7 +35,6 @@ class VideoAdapter(
         holder.title.text = video.title
         holder.source.text = video.url
 
-        // load thumbnail
         if (video.thumbnailUrl.isNotEmpty()) {
             Glide.with(holder.itemView.context)
                 .load(video.thumbnailUrl)
@@ -49,11 +49,27 @@ class VideoAdapter(
         }
 
         holder.itemView.setOnLongClickListener {
-            onDeleteClick(position)
+            val popup = android.widget.PopupMenu(holder.itemView.context, holder.itemView)
+            popup.menuInflater.inflate(R.menu.video_item_menu, popup.menu)
+            popup.setOnMenuItemClickListener { item ->
+                when (item.itemId) {
+                    R.id.action_edit -> {
+                        onEditClick(position)
+                        true
+                    }
+                    R.id.action_delete -> {
+                        onDeleteClick(position)
+                        true
+                    }
+                    else -> false
+                }
+            }
+            popup.show()
             true
         }
 
     }
+
 
     override fun getItemCount(): Int = items.size
 }

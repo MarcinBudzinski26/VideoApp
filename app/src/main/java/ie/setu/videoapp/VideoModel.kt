@@ -1,7 +1,7 @@
 package ie.setu.videoapp
 
 data class VideoModel(
-    val title: String,
-    val url: String,
-    val thumbnailUrl: String = ""
+    var title: String,
+    var url: String,
+    var thumbnailUrl: String = ""
 )
