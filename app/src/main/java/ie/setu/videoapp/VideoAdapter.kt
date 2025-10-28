@@ -47,7 +47,5 @@ class VideoAdapter(
         }
     }
 
-
-
     override fun getItemCount(): Int = items.size
 }
