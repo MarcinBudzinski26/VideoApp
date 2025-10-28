@@ -6,6 +6,10 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import ie.setu.videoapp.databinding.ActivityMainBinding
+import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.RecyclerView
+import java.util.Collections
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -62,6 +66,57 @@ class MainActivity : AppCompatActivity() {
 
         binding.videoRecycler.layoutManager = LinearLayoutManager(this)
         binding.videoRecycler.adapter = adapter
+
+        // Enable drag-and-drop reordering
+        val itemTouchHelperCallback = object : ItemTouchHelper.SimpleCallback(
+            ItemTouchHelper.UP or ItemTouchHelper.DOWN, 0
+        ) {
+            override fun onMove(
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                target: RecyclerView.ViewHolder
+            ): Boolean {
+                val fromPosition = viewHolder.adapterPosition
+                val toPosition = target.adapterPosition
+
+                // Swap the videos in the list
+                Collections.swap(videos, fromPosition, toPosition)
+                adapter.notifyItemMoved(fromPosition, toPosition)
+                return true
+            }
+
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                // No swipe action for now
+            }
+
+            override fun isLongPressDragEnabled(): Boolean {
+                // Allow drag by holding down the item
+                return true
+            }
+
+            override fun onSelectedChanged(viewHolder: RecyclerView.ViewHolder?, actionState: Int) {
+                super.onSelectedChanged(viewHolder, actionState)
+                // Optional lift effect while dragging
+                if (actionState == ItemTouchHelper.ACTION_STATE_DRAG) {
+                    viewHolder?.itemView?.alpha = 0.7f
+                    viewHolder?.itemView?.scaleX = 1.05f
+                    viewHolder?.itemView?.scaleY = 1.05f
+                }
+            }
+
+            override fun clearView(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder) {
+                super.clearView(recyclerView, viewHolder)
+                // Reset view appearance after drag
+                viewHolder.itemView.alpha = 1.0f
+                viewHolder.itemView.scaleX = 1.0f
+                viewHolder.itemView.scaleY = 1.0f
+            }
+        }
+
+// Attach it to the RecyclerView
+        val itemTouchHelper = ItemTouchHelper(itemTouchHelperCallback)
+        itemTouchHelper.attachToRecyclerView(binding.videoRecycler)
+
 
         // add new video
         binding.addFab.setOnClickListener {
