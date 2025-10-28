@@ -24,10 +24,22 @@ class MainActivity : AppCompatActivity() {
             )
         )
 
-        val adapter = VideoAdapter(videos) { video ->
-            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(video.url))
-            startActivity(intent)
-        }
+        lateinit var adapter: VideoAdapter
+
+        adapter = VideoAdapter(
+            videos,
+            onItemClick = { video ->
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(video.url))
+                startActivity(intent)
+            },
+            onDeleteClick = { position ->
+                val deleted = videos[position]
+                videos.removeAt(position)
+                adapter.notifyItemRemoved(position)
+                android.widget.Toast.makeText(this, "Deleted: ${deleted.title}", android.widget.Toast.LENGTH_SHORT).show()
+            }
+        )
+
 
         binding.videoRecycler.layoutManager = LinearLayoutManager(this)
         binding.videoRecycler.adapter = adapter

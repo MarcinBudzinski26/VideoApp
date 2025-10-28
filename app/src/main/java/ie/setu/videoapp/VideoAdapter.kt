@@ -10,9 +10,11 @@ import com.bumptech.glide.Glide
 
 
 class VideoAdapter(
-    private val items: List<VideoModel>,
-    private val onItemClick: (VideoModel) -> Unit
-) : RecyclerView.Adapter<VideoAdapter.VideoViewHolder>() {
+    private val items: MutableList<VideoModel>,
+    private val onItemClick: (VideoModel) -> Unit,
+    private val onDeleteClick: (Int) -> Unit
+)
+ : RecyclerView.Adapter<VideoAdapter.VideoViewHolder>() {
 
 
     inner class VideoViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -45,6 +47,12 @@ class VideoAdapter(
         holder.itemView.setOnClickListener {
             onItemClick(video)
         }
+
+        holder.itemView.setOnLongClickListener {
+            onDeleteClick(position)
+            true
+        }
+
     }
 
     override fun getItemCount(): Int = items.size
