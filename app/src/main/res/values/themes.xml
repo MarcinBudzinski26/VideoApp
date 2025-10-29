@@ -1,9 +1,20 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Base.Theme.VideoApp" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+    <style name="Theme.Vaulto" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/vaulto_accent</item>
+        <item name="colorAccent">@color/vaulto_accent</item>
+        <item name="colorOnPrimary">@color/vaulto_text_primary</item>
+        <item name="android:windowBackground">@color/vaulto_bg</item>
+        <item name="android:textColor">@color/vaulto_text_primary</item>
+        <item name="android:navigationBarColor">@color/vaulto_bg</item>
+        <item name="android:statusBarColor">@color/vaulto_bg</item>
+        <item name="materialCardViewStyle">@style/VaultoCardStyle</item>
     </style>
 
-    <style name="Theme.VideoApp" parent="Base.Theme.VideoApp" />
+    <style name="VaultoCardStyle" parent="Widget.MaterialComponents.CardView">
+        <item name="cardBackgroundColor">@color/vaulto_surface</item>
+        <item name="cardCornerRadius">16dp</item>
+        <item name="cardElevation">4dp</item>
+    </style>
+
 </resources>
