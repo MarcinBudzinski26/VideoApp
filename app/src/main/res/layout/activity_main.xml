@@ -4,29 +4,141 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/vaulto_bg">
+    android:background="@color/vaulto_bg"
+    >
 
+    <!-- Dimmed logo background -->
+    <ImageView
+        android:id="@+id/vaultoLogoBackground"
+        android:layout_width="250dp"
+        android:layout_height="250dp"
+        android:layout_gravity="center"
+        android:alpha="0.05"
+        android:src="@drawable/logo"
+        android:scaleType="fitCenter"
+        android:contentDescription="Vaulto Logo Background" />
+
+    <!-- Search bar -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/searchLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:hint="Search videos..."
+        app:startIconDrawable="@android:drawable/ic_menu_search"
+        app:endIconMode="clear_text"
+        app:startIconTint="@color/vaulto_text_secondary"
+        app:endIconTint="@color/vaulto_text_secondary"
+        app:boxBackgroundMode="filled"
+        app:boxBackgroundColor="@color/vaulto_surface"
+        app:boxStrokeWidth="0dp"
+        app:boxCornerRadiusTopStart="20dp"
+        app:boxCornerRadiusTopEnd="20dp"
+        app:boxCornerRadiusBottomStart="20dp"
+        app:boxCornerRadiusBottomEnd="20dp"
+        android:paddingBottom="3dp"
+        android:paddingTop="3dp"
+        >
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/searchInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/vaulto_text_primary"
+            android:textColorHint="@color/vaulto_text_secondary"
+            android:inputType="text"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <!-- Divider line -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/vaulto_accent" />
+
+
+    <!-- Video list -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/videoRecycler"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="12dp"
+        android:paddingHorizontal="12dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="90dp"
+
         android:scrollbars="vertical"
-        android:clipToPadding="false" />
+        android:clipToPadding="false"
+        android:layout_marginTop="80dp"
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/addFab"
-        android:layout_width="wrap_content"
+        />
+
+    <!-- Background bar (behind buttons) -->
+    <View
+        android:id="@+id/keyboardBackgroundBar"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_gravity="bottom"
+        android:background="@color/vaulto_surface"
+        android:alpha="1"
+        android:visibility="visible"
+        android:elevation="0dp" />  <!-- lower elevation -->
+
+    <!-- Bottom control buttons -->
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="end|bottom"
-        android:layout_margin="24dp"
-        android:contentDescription="Add Video"
-        app:srcCompat="@android:drawable/ic_input_add"
-        app:backgroundTint="@color/vaulto_accent"
-        app:tint="@color/vaulto_text_primary"
-        app:elevation="12dp"
-        app:borderWidth="0dp" />
+        android:layout_gravity="bottom"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginBottom="6dp"
+        android:paddingHorizontal="24dp"
+        android:weightSum="2">
 
+        <!-- Add Video Button -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/addButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginEnd="8dp"
+            android:text="+  Add Video"
+            android:textColor="@color/vaulto_text_primary"
+            android:textSize="11sp"
+            android:fontFamily="sans-serif-medium"
+            app:cornerRadius="20dp"
+            app:strokeColor="@color/vaulto_accent"
+            app:strokeWidth="2dp"
+            app:backgroundTint="@color/vaulto_bg"
+            app:elevation="12dp"
+            android:paddingLeft="24dp"
+            android:paddingRight="24dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:contentDescription="Add video button" />
 
+        <!-- Hide Keyboard Button -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/hideKeyboardButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="8dp"
+            android:text="▼ Keyboard"
+            android:textColor="@color/vaulto_text_primary"
+            android:textSize="11sp"
+            android:fontFamily="sans-serif-medium"
+            app:cornerRadius="20dp"
+            app:strokeColor="@color/vaulto_accent"
+            app:strokeWidth="2dp"
+            app:backgroundTint="@color/vaulto_bg"
+            app:elevation="8dp"
+            android:paddingLeft="24dp"
+            android:paddingRight="24dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:visibility="gone"
+            android:contentDescription="Hide keyboard button" />
+    </LinearLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

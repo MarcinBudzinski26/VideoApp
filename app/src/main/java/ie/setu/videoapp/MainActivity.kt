@@ -1,9 +1,13 @@
 package ie.setu.videoapp
 
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.view.View
+import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
@@ -12,6 +16,7 @@ import com.google.gson.reflect.TypeToken
 import com.google.android.material.snackbar.Snackbar
 import ie.setu.videoapp.databinding.ActivityMainBinding
 import java.util.Collections
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -29,15 +34,63 @@ class MainActivity : AppCompatActivity() {
 
         // Add default sample only if list is empty
         if (videos.isEmpty()) {
-            videos.add(
+            val defaultVideos = listOf(
                 VideoModel(
-                    "Never Gonna Give You Up",
-                    "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-                    "https://i.ytimg.com/vi/dQw4w9WgXcQ/hqdefault.jpg"
+                    "The Weeknd - Blinding Lights",
+                    "https://www.youtube.com/watch?v=fHI8X4OXluQ",
+                    "https://i.ytimg.com/vi/fHI8X4OXluQ/hqdefault.jpg"
+                ),
+                VideoModel(
+                    "Eminem - Without Me",
+                    "https://www.youtube.com/watch?v=YVkUvmDQ3HY",
+                    "https://i.ytimg.com/vi/YVkUvmDQ3HY/hqdefault.jpg"
+                ),
+                VideoModel(
+                    "Imagine Dragons - Believer",
+                    "https://www.youtube.com/watch?v=7wtfhZwyrcc",
+                    "https://i.ytimg.com/vi/7wtfhZwyrcc/hqdefault.jpg"
+                ),
+                VideoModel(
+                    "Billie Eilish - bad guy",
+                    "https://www.youtube.com/watch?v=DyDfgMOUjCI",
+                    "https://i.ytimg.com/vi/DyDfgMOUjCI/hqdefault.jpg"
+                ),
+                VideoModel(
+                    "Post Malone - Circles",
+                    "https://www.youtube.com/watch?v=wXhTHyIgQ_U",
+                    "https://i.ytimg.com/vi/wXhTHyIgQ_U/hqdefault.jpg"
+                ),
+                VideoModel(
+                    "Dua Lipa - Levitating",
+                    "https://www.youtube.com/watch?v=TUVcZfQe-Kw",
+                    "https://i.ytimg.com/vi/TUVcZfQe-Kw/hqdefault.jpg"
+                ),
+                VideoModel(
+                    "Drake - God's Plan",
+                    "https://www.youtube.com/watch?v=xpVfcZ0ZcFM",
+                    "https://i.ytimg.com/vi/xpVfcZ0ZcFM/hqdefault.jpg"
+                ),
+                VideoModel(
+                    "Ed Sheeran - Shape of You",
+                    "https://www.youtube.com/watch?v=JGwWNGJdvx8",
+                    "https://i.ytimg.com/vi/JGwWNGJdvx8/hqdefault.jpg"
+                ),
+                VideoModel(
+                    "Kendrick Lamar - HUMBLE.",
+                    "https://www.youtube.com/watch?v=tvTRZJ-4EyI",
+                    "https://i.ytimg.com/vi/tvTRZJ-4EyI/hqdefault.jpg"
+                ),
+                VideoModel(
+                    "Coldplay - Paradise",
+                    "https://www.youtube.com/watch?v=1G4isv_Fylg",
+                    "https://i.ytimg.com/vi/1G4isv_Fylg/hqdefault.jpg"
                 )
             )
+
+            videos.addAll(defaultVideos)
             saveVideos()
         }
+
 
         // Adapter setup
         adapter = VideoAdapter(
@@ -79,6 +132,50 @@ class MainActivity : AppCompatActivity() {
         binding.videoRecycler.layoutManager = LinearLayoutManager(this)
         binding.videoRecycler.adapter = adapter
 
+        binding.searchInput.addTextChangedListener { query ->
+            val text = query.toString().trim().lowercase()
+            val filtered = if (text.isEmpty()) videos else videos.filter {
+                it.title.lowercase().contains(text)
+            }.toMutableList()
+
+            adapter = VideoAdapter(filtered,
+                onItemClick = { video ->
+                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(video.url))
+                    startActivity(intent)
+                },
+                onEditClick = { position ->
+                    showEditDialog(filtered[position], position)
+                },
+                onDeleteClick = { position ->
+                    val video = filtered[position]
+                    videos.remove(video)
+                    adapter.notifyDataSetChanged()
+                    saveVideos()
+                }
+            )
+            binding.videoRecycler.adapter = adapter
+        }
+
+        val rootView = binding.root
+        rootView.viewTreeObserver.addOnGlobalLayoutListener {
+            val heightDiff = rootView.rootView.height - rootView.height
+            val keyboardVisible = heightDiff > 300
+
+            binding.keyboardBackgroundBar.visibility = if (keyboardVisible) View.VISIBLE else View.GONE
+            binding.hideKeyboardButton.visibility = if (keyboardVisible) View.VISIBLE else View.GONE
+        }
+
+
+
+        binding.hideKeyboardButton.setOnClickListener {
+            val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(binding.root.windowToken, 0)
+            binding.searchInput.clearFocus()
+        }
+
+
+
+
         // Enable drag-and-drop reordering
         val itemTouchHelperCallback = object : ItemTouchHelper.SimpleCallback(
             ItemTouchHelper.UP or ItemTouchHelper.DOWN, 0
@@ -95,6 +192,7 @@ class MainActivity : AppCompatActivity() {
                 saveVideos()
                 return true
             }
+
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {}
             override fun isLongPressDragEnabled() = true
@@ -120,7 +218,7 @@ class MainActivity : AppCompatActivity() {
         itemTouchHelper.attachToRecyclerView(binding.videoRecycler)
 
         // Add new video
-        binding.addFab.setOnClickListener {
+        binding.addButton.setOnClickListener {
             val builder = androidx.appcompat.app.AlertDialog.Builder(this)
             builder.setTitle("Add new video")
 
@@ -164,6 +262,7 @@ class MainActivity : AppCompatActivity() {
             builder.setNegativeButton("Cancel", null)
             builder.show()
         }
+
     }
 
     private fun showEditDialog(video: VideoModel, position: Int) {
