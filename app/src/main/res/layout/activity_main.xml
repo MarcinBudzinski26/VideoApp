@@ -66,11 +66,9 @@
         android:paddingHorizontal="12dp"
         android:paddingTop="8dp"
         android:paddingBottom="90dp"
-
         android:scrollbars="vertical"
         android:clipToPadding="false"
         android:layout_marginTop="80dp"
-
         />
 
     <!-- Background bar (behind buttons) -->
