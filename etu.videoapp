@@ -1,0 +1,13 @@
+[33m9de426c[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmaster[m[33m, [m[1;33mtag: [m[1;33mv0.95[m[33m, [m[1;31morigin/master[m[33m)[m Improved User UI, added Search option, added more sample data, added hide keyboard button. Added Logo
+[33m7f238f8[m[33m ([m[1;33mtag: [m[1;33mv0.91[m[33m)[m Revamped UI interface and added a new color scheme.
+[33m1859d42[m[33m ([m[1;33mtag: [m[1;33mv0.90[m[33m)[m Added persistence and automatic saving upon any action.
+[33mc57b7b1[m[33m ([m[1;33mtag: [m[1;33mv0.85[m[33m)[m Added interactive drag and drop to re-order list of videos.
+[33m30736bb[m[33m ([m[1;33mtag: [m[1;33mv0.8[m[33m)[m Added interactive edit/delete menu with confirmation to delete and undo option upon deletion.
+[33m9c60491[m[33m ([m[1;33mtag: [m[1;33mv0.6[m[33m)[m Added delete option on hold - will add confirmation prompt next
+[33m8c83a5d[m[33m ([m[1;33mtag: [m[1;33mv0.5[m[33m)[m Added non-persistant add function which allows to paste link of youtube video and fetches thumbnail, stores it in mutable list.
+[33m73004ac[m[33m ([m[1;33mtag: [m[1;33mv0.373004ac[m[33m, [m[1;33mtag: [m[1;33mv0.3[m[33m)[m Added thumbnail support for videos.
+[33mc942c1f[m[33m ([m[1;33mtag: [m[1;33mv0.2[m[33m)[m Added sample video and clickability to take user to video source.
+[33ma16761e[m[33m ([m[1;33mtag: [m[1;33mv0.12[m[33m)[m VideoApp Added layout for add button and fixed main function (onCreate)
+[33m6cae47d[m[33m ([m[1;33mtag: [m[1;33mv0.11[m[33m)[m VideoApp add button plus list
+[33m79f875f[m[33m ([m[1;33mtag: [m[1;33mv0.1[m[33m)[m VideoApp start
+[33m5afe654[m[33m ([m[1;33mtag: [m[1;33mv1.0[m[33m)[m VideoApp start

@@ -110,6 +110,7 @@ class MainActivity : AppCompatActivity() {
                 builder.setPositiveButton("Delete") { _, _ ->
                     videos.removeAt(position)
                     adapter.notifyItemRemoved(position)
+                    adapter.notifyDataSetChanged()
                     saveVideos()
 
                     val snackbar = Snackbar.make(
@@ -165,16 +166,11 @@ class MainActivity : AppCompatActivity() {
             binding.hideKeyboardButton.visibility = if (keyboardVisible) View.VISIBLE else View.GONE
         }
 
-
-
         binding.hideKeyboardButton.setOnClickListener {
             val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             imm.hideSoftInputFromWindow(binding.root.windowToken, 0)
             binding.searchInput.clearFocus()
         }
-
-
-
 
         // Enable drag-and-drop reordering
         val itemTouchHelperCallback = object : ItemTouchHelper.SimpleCallback(
@@ -188,11 +184,11 @@ class MainActivity : AppCompatActivity() {
                 val fromPosition = viewHolder.adapterPosition
                 val toPosition = target.adapterPosition
                 Collections.swap(videos, fromPosition, toPosition)
+
                 adapter.notifyItemMoved(fromPosition, toPosition)
                 saveVideos()
                 return true
             }
-
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {}
             override fun isLongPressDragEnabled() = true
@@ -211,6 +207,7 @@ class MainActivity : AppCompatActivity() {
                 viewHolder.itemView.alpha = 1.0f
                 viewHolder.itemView.scaleX = 1.0f
                 viewHolder.itemView.scaleY = 1.0f
+                adapter.notifyDataSetChanged()
             }
         }
 
@@ -303,6 +300,7 @@ class MainActivity : AppCompatActivity() {
                 videos[position].url = newUrl
                 videos[position].thumbnailUrl = newThumb
                 adapter.notifyItemChanged(position)
+                adapter.notifyDataSetChanged()
                 saveVideos()
             }
         }
